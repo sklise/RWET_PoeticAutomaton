@@ -7,12 +7,11 @@ import sys, re, hyphenate, random
 
 seed = sys.argv[1] # `seed` is the word to start the poem with.
 totalsteps = int(sys.argv[2]) # `generations` is how many lines to repeat the cellular automaton
-wordlist = open('sowpods.txt')
 
-rule30	= [0,0,0,1,1,1,1,0]
-rule54	= [0,0,1,1,0,1,1,0]
-rule60	= [0,0,1,1,1,1,0,0]
-rule102	= [0,1,1,0,0,1,1,0]
+rule30 = [0,0,0,1,1,1,1,0]
+rule54 = [0,0,1,1,0,1,1,0]
+rule60 = [0,0,1,1,1,1,0,0]
+rule102 = [0,1,1,0,0,1,1,0]
 rule126 = [0,1,1,1,1,1,1,0]
 
 def wordFromRule(word, rule):
@@ -23,8 +22,8 @@ def wordFromRule(word, rule):
 	syls = hyphenate.hyphenate_word(word) # split the word into syllables
 	leng = len(syls)
 	if leng <= 1: # if there aren't 3 syllables, make snippets.
-		syls = []
-		if len(word) >= 3:
+		syls = ['','','']
+		if len(word) >= 1:
 			syls[0] = word[:1]
 			syls[1] = word[1:2]
 			syls[2] = word[-2:]
@@ -32,33 +31,27 @@ def wordFromRule(word, rule):
 			syls[0] = word
 			syls[1] = word
 			syls[2] = word
-	
 	if rule in [0,1,4,5]: # Choose the appropriate search
-		thesearch = re.compile(r'%s' % syls[0])
+		thesearch = re.compile(r'%s' % syls[1])
 	elif rule in [2,3,6]:
 		thesearch = re.compile(r'^%s' % syls[0])
 	else:
 		thesearch = re.compile(r'%s$' % syls[leng-1])
-		
+	wordlist = open('sowpods.txt') # have to open this file each time, for whatever reason.
 	for line in wordlist: # go through the dictionary
-		print "looks at a line"
-		# print "LOOKIN"
-		liner = line.strip() # strip whitespace, etc
-		f = thesearch.search(liner)
-		if f: # if the word matches
-			thematches.append(liner) # add it to the list
+		try:
+			#print "looks at a line"
+			liner = line.strip() # strip whitespace, etc
+			f = thesearch.search(liner)
+			if f: # if the word matches
+				thematches.append(liner) # add it to the list
+		except:
+			raise
 			
 	lm = len(thematches)
 	if lm <= 1: # if there are no matches
 		thematches = ['elephant'] # just use the original word.
 	choice = random.randint(0,len(thematches)-1)
-	print "running rule:",
-	print rule,
-	print "on the word: ",
-	print word,
-	print "the matches:",
-	print len(thematches)
-	print ""
 	return thematches[choice]
 
 def generate(x, y, rule):
@@ -94,10 +87,7 @@ def generate(x, y, rule):
 
 grid = [] # Make a grid to hold the poem.
 gwidth = totalsteps*2-1 # Width of the grid based on specified steps
-print totalsteps
 for i in xrange(totalsteps):
-	print "row i=",
-	print i
 	gridline = []
 	for j in xrange(gwidth):
 		if i==0:
@@ -106,8 +96,14 @@ for i in xrange(totalsteps):
 			else:
 				gridline.append(' ')
 		else:
-			gridline.append(generate(j,i,rule102))
+			gridline.append(generate(j,i,rule30))
 	grid.append(gridline)
 
 for r in grid: # PRINTING!
-	print r
+	for s in r:
+		if s == ' ':
+			print '      ',
+		else:
+			print s,
+			print " ",
+	print ""
