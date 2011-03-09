@@ -3,19 +3,68 @@
 
 # This probably won't be beautiful code.
 
-import sys, re, hyphenate
+import sys, re, hyphenate, random
+
+seed = sys.argv[1] # `seed` is the word to start the poem with.
+totalsteps = int(sys.argv[2]) # `generations` is how many lines to repeat the cellular automaton
+wordlist = open('sowpods.txt')
 
 rule30	= [0,0,0,1,1,1,1,0]
 rule54	= [0,0,1,1,0,1,1,0]
 rule60	= [0,0,1,1,1,1,0,0]
+rule102	= [0,1,1,0,0,1,1,0]
 rule126 = [0,1,1,1,1,1,1,0]
 
-wordlist = open('sowpods.txt')
+def wordFromRule(word, rule):
+	syls = []
+	thematches = []
+	leng = 0
+	thesearch = ''
+	syls = hyphenate.hyphenate_word(word) # split the word into syllables
+	leng = len(syls)
+	if leng <= 1: # if there aren't 3 syllables, make snippets.
+		syls = []
+		if len(word) >= 3:
+			syls[0] = word[:1]
+			syls[1] = word[1:2]
+			syls[2] = word[-2:]
+		else:
+			syls[0] = word
+			syls[1] = word
+			syls[2] = word
+	
+	if rule in [0,1,4,5]: # Choose the appropriate search
+		thesearch = re.compile(r'%s' % syls[0])
+	elif rule in [2,3,6]:
+		thesearch = re.compile(r'^%s' % syls[0])
+	else:
+		thesearch = re.compile(r'%s$' % syls[leng-1])
+
+	for line in wordlist: # go through the dictionary
+		print "LOOKIN"
+		line = line.strip() # strip whitespace, etc
+		f = thesearch.match(line)
+		if f: # if the word matches
+			print "FOUND ONE"
+			thematches.append(line) # add it to the list
+			
+	lm = len(thematches)
+	if lm <= 1: # if there are no matches
+		thematches = ['elephant'] # just use the original word.
+	choice = random.randint(0,len(thematches)-1)
+	print "running rule:",
+	print rule,
+	print "on the word: ",
+	print word,
+	print "the matches:",
+	print len(thematches)
+	print ""
+	return thematches[choice]
 
 def generate(x, y, rule):
 	try: # Determine the parents.
 		parent = grid[y-1]
-		try: 
+		try:
 			p1 = parent[x-1]
 		except IndexError:
 			p1 = ' '
@@ -26,93 +75,39 @@ def generate(x, y, rule):
 			p3 = ' '
 	except IndexError:
 		print "index error"
-		
-	if p1 is not ' ' and p2 is not ' ' and p3 is not ' ':
-		if rule[0]:
-			syls = hyphenate.hyphenate_word(p1)
-			print syls[0]
-			return searchPos(syls[0],2)
-		else:
-			return ' '
-	if p1 is not ' ' and p2 is not ' ' and p3 is ' ':
-		if rule[1]:
-			syls = hyphenate.hyphenate_word(p1)
-			return searchPos(syls[0],1)
-		else:
-			return ' '
-	if p1 is not ' ' and p2 is ' ' and p3 is not ' ':
-		if rule[2]:
-			return 'c'
-		else:
-			return ' '
-	if p1 is not ' ' and p2 is ' ' and p3 is ' ':
-		if rule[3]:
-			syls = hyphenate.hyphenate_word(p1)
-			return searchPos(syls[0],1)
-		else:
-			return ' '
-	if p1 is ' ' and p2 is not ' ' and p3 is not ' ':
-		if rule[4]:
-			syls = hyphenate.hyphenate_word(p2)
-			try:
-				return searchPos(syls[1],2)
-			except IndexError:
-				return searchPos(syls[0],2)
-		else:
-			return ' '
-	if p1 is ' ' and p2 is not ' ' and p3 is ' ':
-		if rule[5]:
-			syls = hyphenate.hyphenate_word(p2)
-			try:
-				return searchPos(syls[0],3)
-			except IndexError:
-				return searchPos(syls[0],3)
-		else:
-			return ' '
-	if p1 is ' ' and p2 is ' ' and p3 is not ' ':
-		if rule[6]:
-			syls = hyphenate.hyphenate_word(p3)
-			n = len(syls)
-			return searchPos(syls[n-1],3)
-		else:
-			return ' '
-	if p1 is ' ' and p2 is ' ' and p3 is ' ':
-		if rule[7]:
-			return 'h'
-		else:
-			return ' '
-
-def searchPos(st,pos):
-	answer = st
-	for line in wordlist:
-		line = line.strip()
-		if pos is 1:
-			if re.search('^%s.*' % st, line):
-				answer = line
-		elif pos is 2:
-			if re.search('.*%s,*' % st, line):
-				answer = line
-		else:
-			if re.search('%s$' % st, line):
-				answer = line
-	return answer
-
-seed = sys.argv[1] # `seed` is the word to start the poem with.
-totalsteps = int(sys.argv[2]) # `generations` is how many lines to repeat the cellular automaton
+	if p1 is not ' ' and p2 is not ' ' and p3 is not ' ' and rule[0]:
+		return wordFromRule(p1,0)
+	elif p1 is not ' ' and p2 is not ' ' and p3 is ' ' and rule[1]:
+		return wordFromRule(p2,1)
+	elif p1 is not ' ' and p2 is ' ' and p3 is not ' ' and rule[2]:
+		return wordFromRule(p3,2)
+	elif p1 is not ' ' and p2 is ' ' and p3 is ' ' and rule[3]:
+		return wordFromRule(p1,3)
+	elif p1 is ' ' and p2 is not ' ' and p3 is not ' ' and rule[4]:
+		return wordFromRule(p2,4)
+	elif p1 is ' ' and p2 is not ' ' and p3 is ' ' and rule[5]:
+		return wordFromRule(p2,5)
+	elif p1 is ' ' and p2 is ' ' and p3 is not ' ' and rule[6]:
+		return wordFromRule(p3,6)
+	else:
+		return ' '
 
 grid = [] # Make a grid to hold the poem.
 gwidth = totalsteps*2-1 # Width of the grid based on specified steps
+print totalsteps
 for i in xrange(totalsteps):
-	line = []
+	print "row i=",
+	print i
+	gridline = []
 	for j in xrange(gwidth):
 		if i==0:
 			if j==totalsteps-1:
-				line.append(seed)
+				gridline.append(seed)
 			else:
-				line.append(' ')
+				gridline.append(' ')
 		else:
-			line.append(generate(j,i,rule30))
-	grid.append(line)
+			gridline.append(generate(j,i,rule102))
+	grid.append(gridline)
 
 for r in grid: # PRINTING!
 	print r
