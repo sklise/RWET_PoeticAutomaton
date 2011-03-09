@@ -6,7 +6,14 @@
 import sys, re, hyphenate, random
 
 seed = sys.argv[1] # `seed` is the word to start the poem with.
-totalsteps = int(sys.argv[2]) # `generations` is how many lines to repeat the cellular automaton
+try:
+	totalsteps = int(sys.argv[2]) # `generations` is how many lines to repeat the cellular automaton
+except:
+	totalsteps = 4
+try:
+	pickrule = int(sys.argv[3])
+except:
+	pickrule = 30
 
 cellrules = {\
 	30 : [0,0,0,1,1,1,1,0],\
@@ -97,7 +104,7 @@ for i in xrange(totalsteps):
 			else:
 				gridline.append(' ')
 		else:
-			gridline.append(generate(j,i,cellrules[30]))
+			gridline.append(generate(j,i,cellrules[pickrule]))
 	grid.append(gridline)
 
 print seed + " in " + str(totalsteps)
