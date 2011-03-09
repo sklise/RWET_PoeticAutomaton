@@ -8,6 +8,7 @@ import sys, re, hyphenate, random
 try:
 	if isinstance(sys.argv[1],str):
 		seed = sys.argv[1]
+		seed = seed.lower()
 	else:
 		seed = 'context'
 except:
