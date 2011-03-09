@@ -3,7 +3,7 @@
 
 # This probably won't be beautiful code.
 
-import sys
+import sys, re, hyphenate
 
 rule30 = [0,0,0,1,1,1,1,0]
 
@@ -58,15 +58,14 @@ for i in xrange(totalsteps):
 			else:
 				line.append(' ')
 		else:
-			if generate(j,i,rule30) == 0:
-				line.append(' ')
-			else:
+			if generate(j,i,rule30):
 				line.append('X')
+			else:
+				line.append(' ')
 	grid.append(line)
 
 
 # PRINTING!
 for r in grid:
 	print r
-	
 	
