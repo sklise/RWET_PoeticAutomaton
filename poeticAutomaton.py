@@ -8,11 +8,13 @@ import sys, re, hyphenate, random
 seed = sys.argv[1] # `seed` is the word to start the poem with.
 totalsteps = int(sys.argv[2]) # `generations` is how many lines to repeat the cellular automaton
 
-rule30 = [0,0,0,1,1,1,1,0]
-rule54 = [0,0,1,1,0,1,1,0]
-rule60 = [0,0,1,1,1,1,0,0]
-rule102 = [0,1,1,0,0,1,1,0]
-rule126 = [0,1,1,1,1,1,1,0]
+cellrules = {\
+	30 : [0,0,0,1,1,1,1,0],\
+	54 : [0,0,1,1,0,1,1,0],\
+	60 : [0,0,1,1,1,1,0,0],\
+	102 : [0,1,1,0,0,1,1,0],\
+	126 : [0,1,1,1,1,1,1,0]\
+}
 
 def wordFromRule(word, rule):
 	syls = []
@@ -51,8 +53,7 @@ def wordFromRule(word, rule):
 	lm = len(thematches)
 	if lm <= 1: # if there are no matches
 		thematches = ['elephant'] # just use the original word.
-	choice = random.randint(0,len(thematches)-1)
-	return thematches[choice]
+	return random.choice(thematches)
 
 def generate(x, y, rule):
 	try: # Determine the parents.
@@ -96,7 +97,7 @@ for i in xrange(totalsteps):
 			else:
 				gridline.append(' ')
 		else:
-			gridline.append(generate(j,i,rule30))
+			gridline.append(generate(j,i,cellrules[30]))
 	grid.append(gridline)
 
 for r in grid: # PRINTING!
