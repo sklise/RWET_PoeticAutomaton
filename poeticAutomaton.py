@@ -36,7 +36,7 @@ def wordFromRule(word, rule):
 	if rule in [0,1,4,5]: # Choose the appropriate search
 		thesearch = re.compile(r'%s' % syls[1])
 	elif rule in [2,3,6]:
-		thesearch = re.compile(r'^%s' % syls[0])
+		thesearch = re.compile(r'^%s' % syls[leng-1])
 	else:
 		thesearch = re.compile(r'%s$' % syls[leng-1])
 	wordlist = open('sowpods.txt') # have to open this file each time, for whatever reason.
@@ -100,11 +100,24 @@ for i in xrange(totalsteps):
 			gridline.append(generate(j,i,cellrules[30]))
 	grid.append(gridline)
 
+print seed + " in " + str(totalsteps)
+print ""
+
 for r in grid: # PRINTING!
 	for s in r:
 		if s == ' ':
-			print '      ',
+			print '            ',
 		else:
+			slen = len(s)
+			if slen < 12:
+				diff = 12 - slen
+				if diff % 2:
+					for i in xrange(diff/2):
+						s = ' '+s
+				else:
+					for i in xrange(diff/2):
+						s = ' '+s+' '
+				
 			print s,
-			print " ",
 	print ""
+print ""
