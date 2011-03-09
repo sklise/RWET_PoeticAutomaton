@@ -6,7 +6,7 @@ Poetic Automaton
 
 ----
 
-### Purpose: These poems take one word and evolve it according to the rules of a cellular automata.
+### Purpose: These poems take one word and evolve it according to the rules of a [cellular automata](http://mathworld.wolfram.com/ElementaryCellularAutomaton.html).
 
 ### Method:
 
@@ -17,3 +17,6 @@ Poetic Automaton
 4. Use regular expressions to find words that start, end or have as middles the parts of the first word.
 5. Put the resulting words on a second line.
 6. Repeat 3-5 as many times as indicated from input integer.
+
+
+Help from [Hyphenate.py](http://nedbatchelder.com/code/modules/hyphenate.html) and SOWPODS.

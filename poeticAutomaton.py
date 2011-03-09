@@ -39,14 +39,14 @@ def wordFromRule(word, rule):
 		thesearch = re.compile(r'^%s' % syls[0])
 	else:
 		thesearch = re.compile(r'%s$' % syls[leng-1])
-
+		
 	for line in wordlist: # go through the dictionary
-		print "LOOKIN"
-		line = line.strip() # strip whitespace, etc
-		f = thesearch.match(line)
+		print "looks at a line"
+		# print "LOOKIN"
+		liner = line.strip() # strip whitespace, etc
+		f = thesearch.search(liner)
 		if f: # if the word matches
-			print "FOUND ONE"
-			thematches.append(line) # add it to the list
+			thematches.append(liner) # add it to the list
 			
 	lm = len(thematches)
 	if lm <= 1: # if there are no matches
