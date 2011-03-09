@@ -6,7 +6,7 @@ Poetic Automaton
 
 ----
 
-### Purpose: These poems take one word and evolve it according to the rules of a [cellular automata](http://mathworld.wolfram.com/ElementaryCellularAutomaton.html).
+### Purpose: These poems take one word and evolve it according to the rules of a [cellular automata](http://mathworld.wolfram.com/ElementaryCellularAutomaton.html). The [rules list](http://atlas.wolfram.com/01/01/views/3/TableView.html) in terms of neighbors.
 
 ### Method:
 

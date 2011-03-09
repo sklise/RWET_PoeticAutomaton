@@ -5,7 +5,13 @@
 
 import sys, re, hyphenate, random
 
-seed = sys.argv[1] # `seed` is the word to start the poem with.
+try:
+	if isinstance(sys.argv[1],str):
+		seed = sys.argv[1]
+	else:
+		seed = 'context'
+except:
+	seed = 'context'
 try:
 	totalsteps = int(sys.argv[2]) # `generations` is how many lines to repeat the cellular automaton
 except:
@@ -16,11 +22,23 @@ except:
 	pickrule = 30
 
 cellrules = {\
-	30 : [0,0,0,1,1,1,1,0],\
-	54 : [0,0,1,1,0,1,1,0],\
-	60 : [0,0,1,1,1,1,0,0],\
-	102 : [0,1,1,0,0,1,1,0],\
-	126 : [0,1,1,1,1,1,1,0]\
+	0	: [0,0,0,0,0,0,0,0],\
+	1	: [0,0,0,0,0,0,0,1],\
+	2 	: [0,0,0,0,0,0,1,0],\
+	3	: [0,0,0,0,0,0,1,1],\
+	4	: [0,0,0,0,0,1,0,0],\
+	5	: [0,0,0,0,0,1,0,1],\
+	6	: [0,0,0,0,0,1,1,0],\
+	7	: [0,0,0,0,0,1,1,1],\
+	8	: [0,0,0,0,1,0,0,0],\
+	18	: [0,0,0,1,0,0,1,0],\
+	30	: [0,0,0,1,1,1,1,0],\
+	54	: [0,0,1,1,0,1,1,0],\
+	60	: [0,0,1,1,1,1,0,0],\
+	62	: [0,0,1,1,1,1,1,0],\
+	102	: [0,1,1,0,0,1,1,0],\
+	126	: [0,1,1,1,1,1,1,0],\
+	188	: [1,0,1,1,1,1,0,0]\
 }
 
 def wordFromRule(word, rule):
@@ -107,7 +125,7 @@ for i in xrange(totalsteps):
 			gridline.append(generate(j,i,cellrules[pickrule]))
 	grid.append(gridline)
 
-print seed + " in " + str(totalsteps)
+print seed + " in " + str(totalsteps)+r'/'+str(pickrule)
 print ""
 
 for r in grid: # PRINTING!
@@ -116,11 +134,13 @@ for r in grid: # PRINTING!
 			print '            ',
 		else:
 			slen = len(s)
-			if slen < 12:
-				diff = 12 - slen
-				if diff % 2:
+			if slen < 12: # if the word is short
+				diff = 12 - slen # find the difference
+				if diff % 2: # handle odd and even differently
 					for i in xrange(diff/2):
-						s = ' '+s
+						if diff > 2:
+							s = ' '+s+' '
+					s = ' '+s
 				else:
 					for i in xrange(diff/2):
 						s = ' '+s+' '
