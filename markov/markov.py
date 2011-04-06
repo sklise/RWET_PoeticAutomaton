@@ -74,10 +74,5 @@ if __name__ == '__main__':
 
 	for i in range(14) :
 		print generator.generate(3)
-		# print generator.beginnings[i]
-		# print ""
 
-	# for i in generator.ngrams[1]:
-		# print i
-		
 # "\[[A-z]*|\W*\]"
